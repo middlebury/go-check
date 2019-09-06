@@ -1,0 +1,10 @@
+<?php
+
+define("GO_HOME", "/path/to/go");
+define("GO_MAIL", "go-admin@school.edu");
+define("GO_CHECK_CONNECT_TIMEOUT", 60);
+define("GO_CHECK_TIMEOUT", 120);
+define("GO_CHECK_MAX_REDIRECTS", 10);
+define("GO_CHECK_TRACK_REDIRECTS", TRUE);
+define("GO_CHECK_USER_AGENT", "GO Checker");
+define("GO_CHECK_EMAIL_SUBJECT", "Weekly GO Address Check");
