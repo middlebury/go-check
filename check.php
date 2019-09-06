@@ -43,22 +43,24 @@ $emails = array();
 while($row = $select->fetch(PDO::FETCH_LAZY, PDO::FETCH_ORI_NEXT)) {
   $codes[$row->institution][$row->name] = $row->url;
 
-  // Fetch users' email addresses and add them to the users array.
-  if (empty($emails[$row->webid])) {
-    // For simplicity right now, fetch this from Middlebury's Directory web
-    // interface and fail fast without errors. This should be improved to
-    // fetch the user email from CAS or LDAP at some point.
-    $user = @simplexml_load_file('https://directory.middlebury.edu/WebDirectory.asmx/uidSearch?uid=' . $row->webid);
-    if (!empty($user)) {
-      $email = @$user->xpath("//record/property[@name='mail']")[0]['value']->__toString();
-      if (!empty($email)) {
-        $emails[$row->webid] = $email;
+  if ($row->send == "1") {
+    // Fetch users' email addresses and add them to the users array.
+    if (empty($emails[$row->webid])) {
+      // For simplicity right now, fetch this from Middlebury's Directory web
+      // interface and fail fast without errors. This should be improved to
+      // fetch the user email from CAS or LDAP at some point.
+      $user = @simplexml_load_file('https://directory.middlebury.edu/WebDirectory.asmx/uidSearch?uid=' . $row->webid);
+      if (!empty($user)) {
+        $email = @$user->xpath("//record/property[@name='mail']")[0]['value']->__toString();
+        if (!empty($email)) {
+          $emails[$row->webid] = $email;
+        }
       }
     }
-  }
 
-  if (!empty($emails[$row->webid])) {
-    $users[$emails[$row->webid]][$row->url] = $row->institution . '/'. $row->name;
+    if (!empty($emails[$row->webid])) {
+      $users[$emails[$row->webid]][$row->url] = $row->institution . '/'. $row->name;
+    }
   }
 
   $users[GO_CHECK_ADMIN_MAIL][$row->url] = $row->institution . '/'. $row->name;
